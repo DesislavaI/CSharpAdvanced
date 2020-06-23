@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace FastFood
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			int quantity = int.Parse(Console.ReadLine());
+
+			int[] orders = Console.ReadLine()
+				.Split()
+				.Select(int.Parse)
+				.ToArray();
+
+			Queue<int> ordersQueued = new Queue<int>(orders);
+
+			Console.WriteLine(ordersQueued.Max());
+
+			int quantityLeft = quantity;
+
+			while (quantityLeft > 0 || ordersQueued.Count == 0)
+			{
+				
+				if (ordersQueued.Count > 0)
+				{
+					int currentOrder = ordersQueued.First();
+					if (quantityLeft >= currentOrder)
+					{
+						ordersQueued.Dequeue();
+						quantityLeft -= currentOrder;
+					}
+					else
+					{
+						
+						break;
+					}
+					
+				}
+				else
+				{
+
+					break;
+				}
+
+
+			}
+
+			if (ordersQueued.Count > 0)
+			{
+				Console.Write("Orders left: ");
+				Console.WriteLine("{0}", String.Join(" ", ordersQueued));
+			}
+			if (ordersQueued.Count == 0)
+			{
+				Console.WriteLine("Orders complete");
+
+			}
+
+
+		}
+	}
+}
