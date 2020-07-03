@@ -1,0 +1,85 @@
+//Write a program that ranks candidate-interns, depending on the points from the interview tasks and their exam results in SoftUni.You will receive some lines of input in the format "{contest}:{password for contest}" until you receive "end of contests". Save that data because you will need it later.After that you will receive other type of inputs in format "{contest}=>{password}=>{username}=>{points}" until you receive "end of submissions". Here is what you need to do:
+//Check if the contest is valid(if you received it in the first type of input)
+//Check if the password is correct for the given contest
+//Save the user with the contest they take part in (a user can take part in many contests) and the points the user has in the given contest.If you receive the same contest and the same user, update the points only if the new ones are more than the older ones.
+//At the end you have to print the info for the user with the most points in the format:
+//"Best candidate is {user} with total {total points} points.". After that print all students ordered by their names.For each user, print each contest with the points in descending order in the following format:
+//"{user1 name}
+//#  {contest1} -> {points}
+//#  {contest2} -> {points}
+//{user2 name}
+//…"
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Ranking
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			var contests = new Dictionary<string, string>();
+			var students = new Dictionary<string, Dictionary<string, int>>();
+			
+			string line = "";
+
+			while ((line = Console.ReadLine()) != "end of contests")
+			{
+				string[] details = line.Split(':');
+				string contest = details[0];
+				string pass = details[1];
+				contests.Add(contest, pass);
+			}
+			while ((line = Console.ReadLine()) != "end of submissions")
+			{
+				string[] userDetails = line.Split("=>");
+				string contest = userDetails[0];
+				string pass = userDetails[1];
+				string user = userDetails[2];
+				int points = int.Parse(userDetails[3]);
+
+				if (contests.ContainsKey(contest)
+					&& contests[contest] == pass)
+				{
+					if (!students.ContainsKey(user))
+					{
+						students.Add(user, new Dictionary<string, int>());
+						students[user].Add(contest, points);
+					}
+					else if (!students[user].ContainsKey(contest))
+					{
+						students[user].Add(contest, points);
+					}
+					else if (students[user][contest] < points)
+					{
+						students[user][contest] = points;
+					}
+				}
+			}
+			var results = students.OrderByDescending(r => r.Value.Values.Sum());
+
+			var bestStudent = results.First().Key;
+			var bestScore = results.First().Value.Values.Sum();
+
+			Console.WriteLine($"Best candidate is {bestStudent} with total {bestScore} points.");
+			Console.WriteLine("Ranking: ");
+
+			foreach (var student in students.OrderBy(s => s.Key))
+			{
+
+				Console.WriteLine($"{student.Key}");
+
+				foreach (var item in student.Value.OrderByDescending(p => p.Value))
+				{
+					Console.WriteLine($"#  {item.Key} -> {item.Value}");
+				}
+			}
+
+		}
+
+	}
+}
+
+
