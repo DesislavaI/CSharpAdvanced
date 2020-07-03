@@ -1,0 +1,166 @@
+//We get as input the size of the field in which our miner moves.The field is always a square.After that we will receive the commands which represent the directions in which the miner should move.The miner starts from position – ‘s’. The commands will be: left, right, up and down.If the miner has reached a side edge of the field and the next command indicates that he has to get out of the field, he must remain on his current possition and ignore the current command. The possible characters that may appear on the screen are:
+//* – a regular position on the field.
+//e – the end of the route.
+//c  - coal
+//s - the place where the miner starts
+//Each time when the miner finds a coal, he collects it and replaces it with '*'. Keep track of the count of the collected coals.If the miner collects all of the coals in the field, the program stops and you have to print the following message: "You collected all coals! ({rowIndex}, {colIndex})".
+//If the miner steps at 'e' the game is over (the program stops) and you have to print the following message: "Game over! ({rowIndex}, {colIndex})".
+//If there are no more commands and none of the above cases had happened, you have to print the following message: "{remainingCoals} coals left. ({rowIndex}, {colIndex})".
+
+using System;
+
+namespace MinerMiner
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			int n = int.Parse(Console.ReadLine());
+
+			string[] commands = Console.ReadLine().Split();
+
+			string[,] matrix = new string[n, n];
+
+			string row = "";
+
+			matrix = CreateMatrix(n, row);
+
+			string miner = "s";
+			int[] coordinates = new int[2];
+
+			string detail = "";
+			int count = 0;
+
+			coordinates = Localize(matrix, miner);
+			int coalCount = CountCoals(matrix);
+			bool GameOver = false;
+
+			for (int i = 0; i < commands.Length; i++)
+			{
+				detail = commands[i];
+				coordinates = MoveMiner(matrix, coordinates, detail);
+				miner = matrix[coordinates[0], coordinates[1]];
+
+				if (miner == "e")
+				{
+					Console.WriteLine($"Game over! ({coordinates[0]}, {coordinates[1]})");
+					GameOver = true;
+					break;
+				}
+				if (miner == "c")
+				{
+					count++;
+					matrix[coordinates[0], coordinates[1]] = "*";
+				}
+
+			}
+			if (count == coalCount && !GameOver)
+			{
+				Console.WriteLine($"You collected all coals! ({coordinates[0]}, {coordinates[1]})");
+			}
+			else if (count != coalCount && !GameOver)
+			{
+				Console.WriteLine($"{coalCount - count} coals left. ({coordinates[0]}, {coordinates[1]})");
+			}
+		}
+
+		static int CountCoals(string[,] matrix)
+		{
+			int coalCount = 0;
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				for (int j = 0; j < matrix.GetLength(0); j++)
+				{
+					if (matrix[i,j] == "c")
+					{
+						coalCount++;
+					}
+				}
+			}
+
+			return coalCount;
+		}
+
+		static int[] MoveMiner(string[,] matrix, int[] coordinates, string detail)
+		{
+			int newRow = 0;
+			int newCol = 0;
+			int row = coordinates[0];
+			int col = coordinates[1];
+			switch (detail)
+			{
+				case "up":
+					if (row - 1 >= 0)
+					{
+						newRow = row - 1;
+						row = newRow;
+					}
+					break;
+				case "down":
+					if (row + 1 <= matrix.GetLength(0) - 1)
+					{
+						newRow = row + 1;
+						row = newRow;
+					}
+					break;
+				case "left":
+					if (col - 1 >= 0)
+					{
+						newCol = col - 1;
+						col = newCol;
+					}
+					break;
+				case "right":
+					if (col + 1 <= matrix.GetLength(0) - 1)
+					{
+						newCol = col + 1;
+						col = newCol;
+					}
+					break;
+			}
+			coordinates[0] = row;
+			coordinates[1] = col;
+			return coordinates;
+		}
+
+		static int[] Localize(string[,] matrix, string miner)
+		{
+			int row = -1;
+			int col = -1;
+			int[] coordinates = new int[2];
+					
+
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				for (int j = 0; j < matrix.GetLength(0); j++)
+				{
+					if (matrix[i, j] == miner)
+					{
+						row = i;
+						col = j;
+						break;
+					}
+				}
+			}
+			coordinates[0] = row;
+			coordinates[1] = col;
+			return coordinates;
+		}
+
+		private static string[,] CreateMatrix(int n, string row)
+		{
+			string[,] matrix = new string[n, n];
+			for (int i = 0; i < n; i++)
+			{
+				row = Console.ReadLine();
+				string[] currentRow = row.Split();
+				for (int j = 0; j < n; j++)
+				{
+					matrix[i, j] = currentRow[j];
+				}
+				
+			}
+			return matrix;
+		}
+	}
+}
