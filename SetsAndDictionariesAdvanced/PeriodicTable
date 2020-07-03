@@ -1,0 +1,37 @@
+//Write a program that keeps all the unique chemical elements.On the first line you will be given a number n - the count of input lines that you are going to receive.On the next n lines you will be receiving chemical compounds, separated by a single space.Your task is to print all the unique ones in ascending order.
+
+using System;
+using System.Collections.Generic;
+
+namespace _3.PeriodicTable
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			int n = int.Parse(Console.ReadLine());
+			SortedSet<string> periodicElements = new SortedSet<string>();
+
+			for (int i = 0; i < n; i++)
+			{
+				string[] elements = Console.ReadLine()
+					.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+				if (elements.Length > 1)
+				{
+					foreach (var item in elements)
+					{
+						periodicElements.Add(item);
+					}
+				}
+				else if (elements.Length == 1)
+				{
+					periodicElements.Add(elements[0]);
+				}
+
+			}
+
+			Console.WriteLine(string.Join(" ", periodicElements));
+		}
+	}
+}
+
