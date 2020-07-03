@@ -1,0 +1,89 @@
+//Create a program that keeps information about vloggers and their followers.The input will come as e sequence of strings, where each string will represent a valid command.The commands will be presented in the following format:
+//"{vloggername}" joined The V-Logger – keep the vlogger in your records.
+//Vloggernames consist of only one word.
+//If the given vloggername already exists, ignore that command.
+
+//"{vloggername} followed {vloggername}" – The first vlogger followed the second vlogger.
+//If any of the given vlogernames does not exist in you collection, ignore that command.
+//Vlogger cannot follow himself
+//Vlogger cannot follow someone he is already a follower of
+
+//"Statistics" - Upon receiving this command, you have to print a statistic about the vloggers.
+//Each vlogger has an unique vloggername. Vloggers can follow other vloggers and a vlogger can follow as many other vloggers as he wants, but he cannot follow himself or follow someone he is already a follower of. You need to print the total count of vloggers in your collection. Then you have to print the most famous vlogger – the one with the most followers, with his followers.If more than one vloggers have the same number of followers, print the one following less people and his followers should be printed in lexicographical order (in case the vlogger has no followers, print just the first line, which is described below). Lastly, print the rest vloggers, ordered by the count of followers in descending order, then by the number of vloggers he follows in ascending order.The whole output must be in the following format:
+//"The V-Logger has a total of {registered vloggers} vloggers in its logs.
+//1. { mostFamousVlogger} : {followers} followers, {followings} following
+//*  {follower1}
+//*  {follower2} … 
+//{No}. {vlogger} : {followers} followers, {followings} following
+//{No}. {vlogger} : {followers} followers, {followings} following…"
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace TheVLogger
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			string input;
+
+			var vloggers = new Dictionary<string, Dictionary<string, HashSet<string>>>();
+
+
+
+
+			while ((input = Console.ReadLine()) != "Statistics")
+			{
+				string[] details = input.Split();
+
+				string vlogger = details[0];
+
+				string action = details[1];
+
+				if (action == "joined")
+				{
+					if (!vloggers.ContainsKey(vlogger))
+					{
+						vloggers.Add(vlogger, new Dictionary<string, HashSet<string>>());
+						vloggers[vlogger].Add("followers", new HashSet<string>());
+						vloggers[vlogger].Add("following", new HashSet<string>());
+					}
+				}
+				else if (action == "followed")
+				{
+					string follower = details[2];
+
+					if (vlogger != follower
+						&& vloggers.ContainsKey(vlogger)
+						&& vloggers.ContainsKey(follower))
+					{
+						vloggers[vlogger]["following"].Add(follower);
+						vloggers[follower]["followers"].Add(vlogger);
+					}
+				}
+			}
+
+			Console.WriteLine($"The V-Logger has a total of {vloggers.Count} vloggers in its logs.");
+
+			int number = 1;
+
+			foreach (var vlogger in vloggers.OrderByDescending(v => v.Value["followers"].Count).ThenBy(v => v.Value["following"].Count))
+			{
+				Console.WriteLine($"{number}. {vlogger.Key} : {vlogger.Value["followers"].Count} followers, {vlogger.Value["following"].Count} following");
+
+				if (number == 1)
+				{
+					foreach (string follower in vlogger.Value["followers"].OrderBy(f => f))
+					{
+						Console.WriteLine($"*  {follower}");
+					}
+				}
+
+				number++;
+			}
+		}
+	}
+}
+
