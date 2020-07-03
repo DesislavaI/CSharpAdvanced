@@ -1,0 +1,114 @@
+//You will be given a square matrix of integers, each integer separated by a single space, and each row on a new line.Then on the last line of input you will receive indexes - coordinates to several cells separated by a single space, in the following format: row1,column1 row2, column2  row3,column3… 
+//On those cells there are bombs.You have to proceed every bomb, one by one in the order they were given.When a bomb explodes deals damage equal to its own integer value, to all the cells around it (in every direction and in all diagonals). One bomb can't explode more than once and after it does, its value becomes 0. When a cell’s value reaches 0 or below, it dies. Dead cells can't explode.
+//You must print the count of all alive cells and their sum.Afterwards, print the matrix with all of its cells (including the dead ones). 
+
+using System;
+using System.Linq;
+
+
+namespace Bombs
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			int size = int.Parse(Console.ReadLine());
+
+			var matrix = CreateMatrix(size);
+
+			int count = 0;
+			int sum = 0;
+				
+			string[] coordinates = Console.ReadLine().Split();
+
+			for (int i = 0; i < coordinates.Length; i++)
+			{
+				string[] details = coordinates[i].Split(',');
+				int bombRow = int.Parse(details[0]);
+				int bombCol = int.Parse(details[1]);
+						
+
+				if (IsValidCoordinate(matrix, bombRow, bombCol))
+				{
+					BombExplode(matrix, bombRow, bombCol);
+				}
+												
+			}
+			for (int row = 0; row < size; row++)
+			{
+				for (int col = 0; col < size; col++)
+				{
+					if (matrix[row, col] > 0)
+					{
+						count++;
+						sum += matrix[row, col];
+					}
+				}
+			}
+			Console.WriteLine($"Alive cells: {count}");
+			Console.WriteLine($"Sum: {sum}");
+
+			for (int row = 0; row < size; row++)
+			{
+				for (int col = 0; col < size; col++)
+				{
+					Console.Write($"{matrix[row, col]} ");
+				}
+				Console.WriteLine();
+			}
+
+		}
+
+		static void BombExplode(int[,] matrix, int bombRow, int bombCol)
+		{
+			int bombValue = matrix[bombRow, bombCol];
+			int size = matrix.GetLength(0);
+			if (bombValue <= 0)
+				return;
+			// left above the bomb
+			if (IsValidCoordinate(matrix, bombRow - 1, bombCol - 1))
+				if (matrix[bombRow - 1, bombCol - 1] > 0) matrix[bombRow - 1, bombCol - 1] -= bombValue;
+			// above the bomb
+			if (IsValidCoordinate(matrix, bombRow - 1, bombCol))
+				if (matrix[bombRow - 1, bombCol] > 0) matrix[bombRow - 1, bombCol] -= bombValue;
+			// right above the bomb
+			if (IsValidCoordinate(matrix, bombRow - 1, bombCol + 1))
+				if (matrix[bombRow - 1, bombCol + 1] > 0) matrix[bombRow - 1, bombCol + 1] -= bombValue;
+			// on the left of the bomb
+			if (IsValidCoordinate(matrix, bombRow, bombCol - 1))
+				if (matrix[bombRow, bombCol - 1] > 0) matrix[bombRow, bombCol - 1] -= bombValue;
+			// on the bomb
+			matrix[bombRow, bombCol] = 0;
+			// on the right of the bomb
+			if (IsValidCoordinate(matrix, bombRow, bombCol + 1))
+				if (matrix[bombRow, bombCol + 1] > 0) matrix[bombRow, bombCol + 1] -= bombValue;
+			// on the left under the bomb
+			if (IsValidCoordinate(matrix, bombRow + 1, bombCol - 1))
+				if (matrix[bombRow + 1, bombCol - 1] > 0) matrix[bombRow + 1, bombCol - 1] -= bombValue;
+			// under the bomb
+			if (IsValidCoordinate(matrix, bombRow + 1, bombCol))
+				if (matrix[bombRow + 1, bombCol] > 0) matrix[bombRow + 1, bombCol] -= bombValue;
+			// on the right under the bomb
+			if (IsValidCoordinate(matrix, bombRow + 1, bombCol + 1))
+				if (matrix[bombRow + 1, bombCol + 1] > 0) matrix[bombRow + 1, bombCol + 1] -= bombValue;
+		}
+
+		static bool IsValidCoordinate(int[,] matrix, int row, int col)
+			=> row >= 0 && matrix.GetLength(0) > row &&
+			col >= 0 && matrix.GetLength(1) > col;
+		
+		static int[,] CreateMatrix(int size)
+		{
+			var matrix = new int[size, size];
+			for (int row = 0; row < size; row++)
+			{
+				int[] rowValues = Console.ReadLine().Split().Select(int.Parse).ToArray();
+				for (int col = 0; col < size; col++)
+				{
+					matrix[row, col] = rowValues[col];
+				}
+			}
+			return matrix;
+		}
+	}
+}
