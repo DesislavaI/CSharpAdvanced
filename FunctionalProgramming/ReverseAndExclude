@@ -1,0 +1,36 @@
+//Write a program that reverses a collection and removes elements that are divisible by a given integer n.Use predicates/functions.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace _6.ReverseAndExclude
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			int[] numbers = Console.ReadLine().Split().Select(int.Parse).ToArray();
+
+			int divisor = int.Parse(Console.ReadLine());
+
+			Predicate<int> isDivisible = number => number % divisor == 0;
+
+			List<int> remainedNumbers = new List<int>();
+
+			foreach (var num in numbers)
+			{
+				if (!isDivisible(num))
+				{
+					remainedNumbers.Add(num);
+				}
+			}
+
+			remainedNumbers.Reverse();
+
+			Action<List<int>> print = numbers => Console.WriteLine(String.Join(' ', numbers));
+
+			print(remainedNumbers);			
+		}
+	}
+}
