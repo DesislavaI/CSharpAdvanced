@@ -1,0 +1,26 @@
+//Read integers from the console.
+//Print the even numbers, sorted in ascending order.
+//Use two Lambda Expressions.
+
+using System;
+using System.Linq;
+
+namespace FunctionalProgramming
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			int[] numbers = Console.ReadLine()
+				.Split(", ", StringSplitOptions.RemoveEmptyEntries)
+				.Select(n => int.Parse(n))
+				.Where(n => n % 2 == 0)
+				.OrderBy(n => n)
+				.ToArray();
+
+			string result = String.Join(", ", numbers);
+
+			Console.WriteLine(result);
+		}
+	}
+}
