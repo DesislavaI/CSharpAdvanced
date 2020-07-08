@@ -1,0 +1,19 @@
+//Write a program that reads a collection of names as strings from the console, appends "Sir" in front of every name and prints it back on the console.Use Action<T>.
+
+using System;
+
+namespace _2.KnightsOfHonor
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			Action<string[]> printKnights = knights
+				=> Console.WriteLine("Sir " + String.Join(Environment.NewLine + "Sir ", knights));
+
+			string[] knightsNames = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+			printKnights(knightsNames);
+		}
+	}
+}
