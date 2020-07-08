@@ -1,0 +1,49 @@
+//Write a program that executes some mathematical operations on a given collection.On the first line you are given a list of numbers. On the next lines you are passed different commands that you need to apply to all the numbers in the list:
+//"add" -> add 1 to each number
+//"multiply" -> multiply each number by 2
+//"subtract" -> subtract 1 from each number
+//"print" -> print the collection
+//"end" -> ends the input
+//Use functions.
+
+using System;
+using System.Linq;
+
+namespace _5.AppliedArithmetic
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			int[] numbers = Console.ReadLine().Split().Select(int.Parse).ToArray();
+
+			string command = "";
+
+			Func<int, int> add = number => number += 1;
+			Func<int, int> multiply = number => number *= 2;
+			Func<int, int> subtract = number => number -= 1;
+
+			Action<int[]> printNumbers = numbers => Console.WriteLine(String.Join(' ', numbers));
+
+			while ((command = Console.ReadLine()) != "end")
+			{
+				if (command == "add")
+				{
+					numbers = numbers.Select(add).ToArray();
+				}
+				else if (command == "multiply")
+				{
+					numbers = numbers.Select(multiply).ToArray();
+				}
+				else if (command == "subtract")
+				{
+					numbers = numbers.Select(subtract).ToArray();
+				}
+				else if (command == "print")
+				{
+					printNumbers(numbers);
+				}
+			}
+		}
+	}
+}
