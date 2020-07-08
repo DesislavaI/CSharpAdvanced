@@ -1,0 +1,40 @@
+//Write a custom comparator that sorts all even numbers before all the odd ones in ascending order.Pass it to Array.Sort() function and print the result. Use functions.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace _8.CustomComparator
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			int[] numbers = Console.ReadLine().Split().Select(int.Parse).ToArray();
+
+			List<int> evenNumbers = new List<int>();
+			List<int> oddNumbers = new List<int>();
+			Predicate<int> isEven = x => x % 2 == 0;
+			Predicate<int> isOdd = x => x % 2 != 0;
+
+			foreach (var number in numbers)
+			{
+				if (isEven(number))
+				{
+					evenNumbers.Add(number);
+				}
+				else if (isOdd(number))
+				{
+					oddNumbers.Add(number);
+				}
+			}
+			evenNumbers.Sort();
+			oddNumbers.Sort();
+
+			var allNumbers = evenNumbers.Concat(oddNumbers);
+
+			Console.WriteLine(String.Join(' ', allNumbers));
+		}
+	}
+}
+
