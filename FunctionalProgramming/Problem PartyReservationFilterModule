@@ -1,0 +1,80 @@
+//You need to implement a filtering module to a party reservation software.First, to the Party Reservation Filter Module (PRFM for short) is passed a list with invitations.Next the PRFM receives a sequence of commands that specify whether you need to add or remove a given filter.
+//Each PRFM command is in the given format:
+//"{command;filter type;filter parameter}"
+//You can receive the following PRFM commands: 
+//"Add filter"
+//"Remove filter"
+//"Print" 
+//The possible PRFM filter types are: 
+//"Starts with"
+//"Ends with"
+//"Length"
+//"Contains"
+//All PRFM filter parameters will be a string (or an integer only for the "Length" filter). Each command will be valid e.g.you won’t be asked to remove a non-existent filter. The input will end with a "Print" command, after which you should print all the party-goers that are left after the filtration.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace _11.PRFM
+{
+	class Program
+	{
+		static void Main(string[] args)
+		{
+			var guests = Console.ReadLine().Split();
+
+			string commands = "";
+
+			List<string> filters = new List<string>();
+
+			while ((commands = Console.ReadLine()) != "Print")
+			{
+				string[] details = commands.Split(';');
+
+				string action = details[0];				
+
+				if (action == "Add filter")
+				{
+					filters.Add($"{details[1]};{details[2]}");
+				}
+				else if (action == "Remove filter")
+				{
+					filters.Remove($"{details[1]};{details[2]}");
+				}
+			}
+
+			Func<string, int, bool> lengthFilter = (name, length) => name.Length == length;
+			Func<string, string, bool> startsWithFilter = (name, param) => name.StartsWith(param);
+			Func<string, string, bool> endsWithFilter = (name, param) => name.EndsWith(param);
+			Func<string, string, bool> containsFilter = (name, param) => name.Contains(param);
+
+			foreach (var currentFilter in filters)
+			{
+				string[] currentFilterInfo = currentFilter.Split(';');
+
+				string action = currentFilterInfo[0];
+				string param = currentFilterInfo[1];
+
+				if (action == "Starts with")
+				{
+					guests = guests.Where(name => !startsWithFilter(name, param)).ToArray();
+				}
+				else if (action == "Ends with")
+				{
+					guests = guests.Where(name => !endsWithFilter(name, param)).ToArray();
+				}
+				else if (action == "Length")
+				{
+					int length = int.Parse(param);
+					guests = guests.Where(name => !lengthFilter(name, length)).ToArray();
+				}
+				else if (action == "Contains")
+				{
+					guests = guests.Where(name => !containsFilter(name, param)).ToArray();
+				}								
+			}
+			Console.WriteLine(String.Join(' ', guests));
+		}
+	}
+}
