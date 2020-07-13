@@ -1,0 +1,69 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace CarExtension
+{
+	class StartUp
+	{
+		static void Main(string[] args)
+		{
+			List<Tire[]> tiresList = new List<Tire[]>();
+			List<Engine> enginesList = new List<Engine>();
+			List<Car> carsList = new List<Car>();
+
+			string command = "";
+
+			while ((command = Console.ReadLine()) != "No more tires")
+			{
+				string[] line = command.Split();
+
+				Tire firstTire = new Tire(int.Parse(line[0]), double.Parse(line[1]));
+				Tire secondTire = new Tire(int.Parse(line[2]), double.Parse(line[3]));
+				Tire thirdTire = new Tire(int.Parse(line[4]), double.Parse(line[5]));
+				Tire fifthTire = new Tire(int.Parse(line[6]), double.Parse(line[7]));
+
+				Tire[] tires = { firstTire, secondTire, thirdTire, fifthTire };
+
+
+				tiresList.Add(tires);
+
+			}
+
+			while ((command = Console.ReadLine()) != "Engines done")
+			{
+				string[] line = command.Split();
+				
+				Engine engine = new Engine(int.Parse(line[0]), double.Parse(line[1]));
+				enginesList.Add(engine);
+			}
+
+			while ((command = Console.ReadLine()) != "Show special")
+			{
+				string[] line = command.Split();
+				
+				int engineIndex = int.Parse(line[5]);
+				int tireIndex = int.Parse(line[6]);
+
+				Engine currentEngine = enginesList.ElementAt(engineIndex);
+				Tire[] currentTires = tiresList.ElementAt(tireIndex);
+
+				Car car = new Car(line[0], line[1], int.Parse(line[2]),
+					double.Parse(line[3]), double.Parse(line[4]), currentEngine, currentTires);
+
+				carsList.Add(car);
+			}
+
+			var selectedCars = carsList.Where(car => car.Year >= 2017
+					&& car.Engine.HorsePower > 330
+					&& car.Tires.Sum(y => y.Pressure) >= 9
+					&& car.Tires.Sum(y => y.Pressure) <= 10);			
+
+			foreach (var specialCar in selectedCars)
+			{
+				specialCar.Drive(20);
+				Console.WriteLine(specialCar.WhoAmI());
+			}	 					
+		}
+	}
+}
