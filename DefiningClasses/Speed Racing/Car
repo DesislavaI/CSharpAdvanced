@@ -1,0 +1,38 @@
+using System;
+
+namespace _6.SpeedRacing
+{
+	public class Car
+	{
+		public Car(string model, double fuelAmount, double fuelConsumptionPerKilometer,double travelledDistance)
+		{
+			this.Model = model;
+			this.FuelAmount = fuelAmount;
+			this.FuelConsumptionPerKilometer = fuelConsumptionPerKilometer;
+			this.TravelledDistance = travelledDistance;
+		}
+		public string Model { get; set; }
+
+		public double FuelAmount { get; set; }
+
+		public double FuelConsumptionPerKilometer { get; set; }
+		
+		public double TravelledDistance { get; set; }
+
+		public void Drive(Car car, double distance)
+		{
+			double usedFuel = car.FuelConsumptionPerKilometer * distance;
+
+			if (usedFuel <= car.FuelAmount)
+			{
+				car.FuelAmount -= usedFuel;
+
+				car.TravelledDistance += distance;
+			}
+			else
+			{
+				Console.WriteLine("Insufficient fuel for the drive");
+			}
+		}
+	}
+}
