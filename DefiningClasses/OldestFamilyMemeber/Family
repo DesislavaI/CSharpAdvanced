@@ -17,9 +17,9 @@ namespace DefiningClasses
 			familyMembers.Add(member);
 		}
 
-		public Person GetOldestMember(List<Person>members)
+		public Person GetOldestMember()
 		{
-			Person oldestMember = members.OrderByDescending(m => m.Age).FirstOrDefault();
+			Person oldestMember = familyMembers.OrderByDescending(m => m.Age).FirstOrDefault();
 			return oldestMember;
 		}
 	}
