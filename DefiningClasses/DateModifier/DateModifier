@@ -1,0 +1,18 @@
+using System;
+
+namespace _5.DateModifier
+{
+	public class DateModifier
+	{
+		public void Modifier(string firstDate, string secondDate)
+		{
+			DateTime fistDateTime = DateTime.Parse(firstDate);
+
+			DateTime secondDateTime = DateTime.Parse(secondDate);
+
+			TimeSpan dayDifference = secondDateTime.Subtract(fistDateTime);
+
+			Console.WriteLine(Math.Abs(dayDifference.TotalDays));
+		}
+	}
+}
